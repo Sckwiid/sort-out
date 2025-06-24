@@ -470,9 +470,9 @@
                     <input type="checkbox" id="multiplayerOnly">
                     <label for="multiplayerOnly">Multijoueur uniquement</label>
                 </div>
-                <div class="custom-buttons">
-                    <button class="custom-btn custom-btn-single" onclick="drawSingleCustomGame()">🎲 Tirer 1 jeu personnalisé</button>
-                    <button class="custom-btn custom-btn-all" onclick="drawAllCustomGames()">🎯 Tirer tous les jeux personnalisés</button>
+                <div class="buttons">
+                    <button class="btn btn-primary" onclick="drawSingleGame()">🎲 Tirer 1 jeu</button>
+                    <button class="btn btn-secondary" onclick="drawAllGames()">🎯 Tirer tous les jeux</button>
                 </div>
             </div>
 
@@ -487,11 +487,10 @@
                     class="custom-textarea" 
                     placeholder="Mettez vos jeux ici en les séparant avec des virgules (exemple: Dead by Daylight, Pokemon, Valorant, Minecraft, Among Us...)"
                 ></textarea>
-            </div>
-
-            <div class="buttons">
-                <button class="btn btn-primary" onclick="drawSingleGame()">🎲 Tirer 1 jeu</button>
-                <button class="btn btn-secondary" onclick="drawAllGames()">🎯 Tirer tous les jeux</button>
+                <div class="custom-buttons">
+                    <button class="custom-btn custom-btn-single" onclick="drawSingleCustomGame()">🎲 Tirer 1 jeu personnalisé</button>
+                    <button class="custom-btn custom-btn-all" onclick="drawAllCustomGames()">🎯 Tirer tous les jeux personnalisés</button>
+                </div>
             </div>
         </div>
 
