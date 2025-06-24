@@ -380,7 +380,14 @@
         async function loadGamesData(category) {
             if (!category) return;
             
-            const fileName = `data/${currentLanguage}-games-all-os-${category}.csv`;
+            const multiplayerOnly = document.getElementById('multiplayerOnly').checked;
+            let fileName;
+            
+            if (multiplayerOnly) {
+                fileName = `data/${currentLanguage}/multi/${currentLanguage}-games-all-os-${category}.csv`;
+            } else {
+                fileName = `data/${currentLanguage}/${currentLanguage}-games-all-os-${category}.csv`;
+            }
             
             try {
                 showLoading();
@@ -410,23 +417,15 @@
             } catch (error) {
                 hideLoading();
                 console.error('Erreur lors du chargement des données:', error);
-                alert('Erreur lors du chargement des données. Vérifiez que le fichier CSV existe dans le dossier data/');
+                alert(`Erreur lors du chargement des données. Vérifiez que le fichier CSV existe : ${fileName}`);
                 return [];
             }
         }
 
         function filterGames() {
-            const multiplayerOnly = document.getElementById('multiplayerOnly').checked;
-            
-            if (!multiplayerOnly) {
-                return gamesData;
-            }
-            
-            return gamesData.filter(game => {
-                // Chercher dans tous les champs pour "Multiplayer" ou "LocalCoop"
-                const gameStr = JSON.stringify(game).toLowerCase();
-                return gameStr.includes('multiplayer') || gameStr.includes('localcoop');
-            });
+            // Avec la nouvelle architecture, le filtre multijoueur charge directement
+            // les fichiers du dossier multi/, donc on retourne toutes les données
+            return gamesData;
         }
 
         async function drawSingleGame() {
@@ -556,9 +555,17 @@
             // La fonction updateResultsDisplay sera appelée après le chargement
         }
 
-        // Charger automatiquement les données quand on change de catégorie
+        // Charger automatiquement les données quand on change de catégorie ou le filtre multijoueur
         document.getElementById('categorySelect').addEventListener('change', function() {
             const category = this.value;
+            if (category) {
+                gamesData = []; // Réinitialiser les données
+                loadGamesData(category);
+            }
+        });
+
+        document.getElementById('multiplayerOnly').addEventListener('change', function() {
+            const category = document.getElementById('categorySelect').value;
             if (category) {
                 gamesData = []; // Réinitialiser les données
                 loadGamesData(category);
