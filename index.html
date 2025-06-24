@@ -115,6 +115,131 @@
             color: white;
         }
 
+        .or-divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .or-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            display: inline-block;
+            padding: 0 20px;
+            background-color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 3px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .or-divider::before {
+            margin-right: 20px;
+        }
+
+        .or-divider::after {
+            margin-left: 20px;
+        }
+
+        .custom-list-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px dashed #667eea;
+        }
+
+        .custom-list-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .custom-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .custom-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .custom-textarea::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .custom-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .custom-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .custom-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+        }
+
+        .custom-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .custom-btn-single {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .custom-btn-single:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .custom-btn-all {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .custom-btn-all:hover {
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
         .buttons {
             display: flex;
             gap: 15px;
@@ -292,6 +417,10 @@
                 width: 100%;
                 max-width: 300px;
             }
+
+            .or-text {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
@@ -304,35 +433,35 @@
 
         <div class="controls">
             <div class="language-toggle">
-                <button class="language-btn active" onclick="setLanguage('fr')">Français</button>
-                <button class="language-btn" onclick="setLanguage('en')">English</button>
+                <button class="language-btn active" onclick="setLanguage('fr')">🇫🇷 Jeux Français</button>
+                <button class="language-btn" onclick="setLanguage('en')">🇬🇧 Jeux Anglais</button>
             </div>
 
             <div class="control-group">
                 <label for="categorySelect">Catégorie de jeu :</label>
                 <select id="categorySelect">
                     <option value="">-- Choisir une catégorie --</option>
-                    <option value="2D">2D</option>
-                    <option value="Action">Action</option>
-                    <option value="Adventure">Adventure</option>
-                    <option value="Casual">Casual</option>
-                    <option value="Coop">Coop</option>
-                    <option value="F2P">F2P</option>
-                    <option value="Fantasy">Fantasy</option>
-                    <option value="Horror">Horror</option>
-                    <option value="Indie">Indie</option>
-                    <option value="LocalCoop">LocalCoop</option>
-                    <option value="Multiplayer">Multiplayer</option>
-                    <option value="PsychologicalHorror">PsychologicalHorror</option>
-                    <option value="Racing">Racing</option>
-                    <option value="Simulation">Simulation</option>
-                    <option value="Singleplayer">Singleplayer</option>
-                    <option value="SleepawayCamp">SleepawayCamp</option>
-                    <option value="StoryRich">StoryRich</option>
-                    <option value="Strategy">Strategy</option>
-                    <option value="SurvivalHorror">SurvivalHorror</option>
-                    <option value="no-tags">no-tags</option>
-                    <option value="rpg">RPG</option>
+                    <option value="2D">🎨 2D</option>
+                    <option value="Action">⚔️ Action</option>
+                    <option value="Adventure">🗺️ Adventure</option>
+                    <option value="Casual">😊 Casual</option>
+                    <option value="Coop">🤝 Coop</option>
+                    <option value="F2P">💰 F2P</option>
+                    <option value="Fantasy">🧙‍♂️ Fantasy</option>
+                    <option value="Horror">👻 Horror</option>
+                    <option value="Indie">🎪 Indie</option>
+                    <option value="LocalCoop">🏠 LocalCoop</option>
+                    <option value="Multiplayer">👥 Multiplayer</option>
+                    <option value="PsychologicalHorror">🧠 PsychologicalHorror</option>
+                    <option value="Racing">🏎️ Racing</option>
+                    <option value="Simulation">🔧 Simulation</option>
+                    <option value="Singleplayer">👤 Singleplayer</option>
+                    <option value="SleepawayCamp">🏕️ SleepawayCamp</option>
+                    <option value="StoryRich">📖 StoryRich</option>
+                    <option value="Strategy">🧠 Strategy</option>
+                    <option value="SurvivalHorror">🆘 SurvivalHorror</option>
+                    <option value="no-tags">🏷️ no-tags</option>
+                    <option value="rpg">🐉 RPG</option>
                 </select>
             </div>
 
@@ -340,6 +469,23 @@
                 <div class="checkbox-group">
                     <input type="checkbox" id="multiplayerOnly">
                     <label for="multiplayerOnly">Multijoueur uniquement</label>
+                </div>
+            </div>
+
+            <div class="or-divider">
+                <span class="or-text">OU</span>
+            </div>
+
+            <div class="custom-list-section">
+                <label class="custom-list-label">Liste de jeux personnalisée :</label>
+                <textarea 
+                    id="customGamesList" 
+                    class="custom-textarea" 
+                    placeholder="Mettez vos jeux ici en les séparant avec des virgules (exemple: Dead by Daylight, Pokemon, Valorant, Minecraft, Among Us...)"
+                ></textarea>
+                <div class="custom-buttons">
+                    <button class="custom-btn custom-btn-single" onclick="drawSingleCustomGame()">🎲 Tirer 1 jeu personnalisé</button>
+                    <button class="custom-btn custom-btn-all" onclick="drawAllCustomGames()">🎯 Tirer tous les jeux personnalisés</button>
                 </div>
             </div>
 
@@ -366,6 +512,73 @@
         let gameDraws = {};
         let gameDrawOrder = []; // Pour conserver l'ordre des tirages
         let isDrawing = false;
+        let customGames = [];
+
+        function parseCustomGames() {
+            const textarea = document.getElementById('customGamesList');
+            const gamesText = textarea.value.trim();
+            
+            if (!gamesText) {
+                return [];
+            }
+            
+            // Séparer par virgules et nettoyer
+            const games = gamesText.split(',')
+                .map(game => game.trim())
+                .filter(game => game.length > 0);
+            
+            return games;
+        }
+
+        function drawSingleCustomGame() {
+            const games = parseCustomGames();
+            
+            if (games.length === 0) {
+                alert('Veuillez saisir au moins un jeu dans la liste personnalisée');
+                return;
+            }
+            
+            const randomGame = games[Math.floor(Math.random() * games.length)];
+            addGameDraw(randomGame);
+        }
+
+        async function drawAllCustomGames() {
+            const games = parseCustomGames();
+            
+            if (games.length === 0) {
+                alert('Veuillez saisir au moins un jeu dans la liste personnalisée');
+                return;
+            }
+
+            if (isDrawing) return;
+            isDrawing = true;
+            
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = '🎯 Tirage en cours...';
+
+            let hasWinner = false;
+            let drawCount = 0;
+            const maxDraws = 1000; // Sécurité pour éviter une boucle infinie
+
+            while (!hasWinner && drawCount < maxDraws) {
+                const randomGame = games[Math.floor(Math.random() * games.length)];
+                addGameDraw(randomGame);
+                
+                // Vérifier s'il y a un gagnant
+                hasWinner = Object.values(gameDraws).some(count => count >= 3);
+                
+                if (!hasWinner) {
+                    // Attendre un peu avant le prochain tirage pour l'effet visuel
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                drawCount++;
+            }
+
+            isDrawing = false;
+            button.disabled = false;
+            button.textContent = '🎯 Tirer tous les jeux personnalisés';
+        }
 
         function setLanguage(lang) {
             currentLanguage = lang;
@@ -502,6 +715,10 @@
             isDrawing = false;
             button.disabled = false;
             button.textContent = '🎯 Tirer tous les jeux';
+        }
+
+        function customDraw() {
+            alert('Fonctionnalité de tirage personnalisé à implémenter !\n\nCette fonction permettra d\'importer votre propre liste de jeux.');
         }
 
         function addGameDraw(gameName) {
