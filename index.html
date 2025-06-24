@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Picker - Tireur de Jeux Aléatoire</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .language-toggle {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .language-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .results {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 200px;
+        }
+
+        .results h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .game-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #e1e5e9;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .game-item.count-1 {
+            border-left-color: #17a2b8;
+            background: #e8f4f8;
+        }
+
+        .game-item.count-2 {
+            border-left-color: #ffc107;
+            background: #fff8e1;
+            animation: pulse 2s infinite;
+        }
+
+        .game-item.count-3 {
+            border-left-color: #28a745;
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            animation: winner 1s ease-in-out;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .game-item.count-3 .game-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #155724;
+        }
+
+        .game-item.count-3::before {
+            content: "🎉 ";
+            font-size: 1.5rem;
+        }
+
+        .game-item.count-3::after {
+            content: " 🎉";
+            font-size: 1.5rem;
+        }
+
+        .game-count {
+            float: right;
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: "...";
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes winner {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes dots {
+            0% { content: "..."; }
+            33% { content: "."; }
+            66% { content: ".."; }
+            100% { content: "..."; }
+        }
+
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls, .results {
+                padding: 20px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Game Picker</h1>
+            <p>Tirez au sort vos prochains jeux à découvrir !</p>
+        </div>
+
+        <div class="controls">
+            <div class="language-toggle">
+                <button class="language-btn active" onclick="setLanguage('fr')">Français</button>
+                <button class="language-btn" onclick="setLanguage('en')">English</button>
+            </div>
+
+            <div class="control-group">
+                <label for="categorySelect">Catégorie de jeu :</label>
+                <select id="categorySelect">
+                    <option value="">-- Choisir une catégorie --</option>
+                    <option value="2D">2D</option>
+                    <option value="Action">Action</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Casual">Casual</option>
+                    <option value="Coop">Coop</option>
+                    <option value="F2P">F2P</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Indie">Indie</option>
+                    <option value="LocalCoop">LocalCoop</option>
+                    <option value="Multiplayer">Multiplayer</option>
+                    <option value="PsychologicalHorror">PsychologicalHorror</option>
+                    <option value="Racing">Racing</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Singleplayer">Singleplayer</option>
+                    <option value="SleepawayCamp">SleepawayCamp</option>
+                    <option value="StoryRich">StoryRich</option>
+                    <option value="Strategy">Strategy</option>
+                    <option value="SurvivalHorror">SurvivalHorror</option>
+                    <option value="no-tags">no-tags</option>
+                    <option value="rpg">RPG</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="multiplayerOnly">
+                    <label for="multiplayerOnly">Multijoueur uniquement</label>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="drawSingleGame()">🎲 Tirer 1 jeu</button>
+                <button class="btn btn-secondary" onclick="drawAllGames()">🎯 Tirer tous les jeux</button>
+            </div>
+        </div>
+
+        <div class="results">
+            <h2>Résultats des tirages</h2>
+            <button class="clear-btn" onclick="clearResults()">Effacer les résultats</button>
+            <div id="resultsContainer">
+                <p style="text-align: center; color: #666; font-style: italic;">
+                    Sélectionnez une catégorie et commencez à tirer !
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'fr';
+        let gamesData = [];
+        let gameDraws = {};
+        let isDrawing = false;
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('.language-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Réinitialiser les données si on change de langue
+            gamesData = [];
+            gameDraws = {};
+            updateResultsDisplay();
+        }
+
+        async function loadGamesData(category) {
+            if (!category) return;
+            
+            const fileName = `data/${currentLanguage}-games-all-os-${category}.csv`;
+            
+            try {
+                showLoading();
+                const response = await fetch(fileName);
+                if (!response.ok) {
+                    throw new Error(`Erreur lors du chargement: ${response.status}`);
+                }
+                
+                const csvText = await response.text();
+                
+                return new Promise((resolve, reject) => {
+                    Papa.parse(csvText, {
+                        header: true,
+                        dynamicTyping: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            gamesData = results.data;
+                            hideLoading();
+                            resolve(gamesData);
+                        },
+                        error: function(error) {
+                            hideLoading();
+                            reject(error);
+                        }
+                    });
+                });
+            } catch (error) {
+                hideLoading();
+                console.error('Erreur lors du chargement des données:', error);
+                alert('Erreur lors du chargement des données. Vérifiez que le fichier CSV existe dans le dossier data/');
+                return [];
+            }
+        }
+
+        function filterGames() {
+            const multiplayerOnly = document.getElementById('multiplayerOnly').checked;
+            
+            if (!multiplayerOnly) {
+                return gamesData;
+            }
+            
+            return gamesData.filter(game => {
+                // Chercher dans tous les champs pour "Multiplayer" ou "LocalCoop"
+                const gameStr = JSON.stringify(game).toLowerCase();
+                return gameStr.includes('multiplayer') || gameStr.includes('localcoop');
+            });
+        }
+
+        async function drawSingleGame() {
+            const category = document.getElementById('categorySelect').value;
+            if (!category) {
+                alert('Veuillez sélectionner une catégorie');
+                return;
+            }
+
+            if (gamesData.length === 0 || !gamesData.some(g => g.name)) {
+                await loadGamesData(category);
+            }
+
+            const filteredGames = filterGames();
+            if (filteredGames.length === 0) {
+                alert('Aucun jeu trouvé avec les critères sélectionnés');
+                return;
+            }
+
+            const randomGame = filteredGames[Math.floor(Math.random() * filteredGames.length)];
+            if (randomGame && randomGame.name) {
+                addGameDraw(randomGame.name);
+            }
+        }
+
+        async function drawAllGames() {
+            const category = document.getElementById('categorySelect').value;
+            if (!category) {
+                alert('Veuillez sélectionner une catégorie');
+                return;
+            }
+
+            if (isDrawing) return;
+            isDrawing = true;
+            
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = '🎯 Tirage en cours...';
+
+            if (gamesData.length === 0) {
+                await loadGamesData(category);
+            }
+
+            const filteredGames = filterGames();
+            if (filteredGames.length === 0) {
+                alert('Aucun jeu trouvé avec les critères sélectionnés');
+                isDrawing = false;
+                button.disabled = false;
+                button.textContent = '🎯 Tirer tous les jeux';
+                return;
+            }
+
+            let hasWinner = false;
+            let drawCount = 0;
+            const maxDraws = 1000; // Sécurité pour éviter une boucle infinie
+
+            while (!hasWinner && drawCount < maxDraws) {
+                const randomGame = filteredGames[Math.floor(Math.random() * filteredGames.length)];
+                if (randomGame && randomGame.name) {
+                    addGameDraw(randomGame.name);
+                    
+                    // Vérifier s'il y a un gagnant
+                    hasWinner = Object.values(gameDraws).some(count => count >= 3);
+                    
+                    if (!hasWinner) {
+                        // Attendre un peu avant le prochain tirage pour l'effet visuel
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+                }
+                drawCount++;
+            }
+
+            isDrawing = false;
+            button.disabled = false;
+            button.textContent = '🎯 Tirer tous les jeux';
+        }
+
+        function addGameDraw(gameName) {
+            if (!gameDraws[gameName]) {
+                gameDraws[gameName] = 0;
+            }
+            gameDraws[gameName]++;
+            updateResultsDisplay();
+        }
+
+        function updateResultsDisplay() {
+            const container = document.getElementById('resultsContainer');
+            
+            if (Object.keys(gameDraws).length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">Sélectionnez une catégorie et commencez à tirer !</p>';
+                return;
+            }
+
+            // Trier les jeux par nombre de tirages (décroissant) puis par ordre alphabétique
+            const sortedGames = Object.entries(gameDraws)
+                .sort(([a, countA], [b, countB]) => {
+                    if (countB !== countA) return countB - countA;
+                    return a.localeCompare(b);
+                });
+
+            container.innerHTML = sortedGames.map(([gameName, count]) => {
+                let displayText = gameName;
+                if (count >= 3) {
+                    displayText = `LE JEU SÉLECTIONNÉ EST : ${gameName}`;
+                }
+                
+                return `
+                    <div class="game-item count-${Math.min(count, 3)}">
+                        <div class="game-name">${displayText}</div>
+                        <div class="game-count">${count}x</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function clearResults() {
+            gameDraws = {};
+            updateResultsDisplay();
+        }
+
+        function showLoading() {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '<div class="loading">Chargement des données</div>';
+        }
+
+        function hideLoading() {
+            // La fonction updateResultsDisplay sera appelée après le chargement
+        }
+
+        // Charger automatiquement les données quand on change de catégorie
+        document.getElementById('categorySelect').addEventListener('change', function() {
+            const category = this.value;
+            if (category) {
+                gamesData = []; // Réinitialiser les données
+                loadGamesData(category);
+            }
+        });
+    </script>
+</body>
+</html>
