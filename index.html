@@ -364,6 +364,7 @@
         let currentLanguage = 'fr';
         let gamesData = [];
         let gameDraws = {};
+        let gameDrawOrder = []; // Pour conserver l'ordre des tirages
         let isDrawing = false;
 
         function setLanguage(lang) {
@@ -508,6 +509,13 @@
                 gameDraws[gameName] = 0;
             }
             gameDraws[gameName]++;
+            
+            // Mettre à jour l'ordre des tirages
+            // Retirer le jeu s'il était déjà dans la liste
+            gameDrawOrder = gameDrawOrder.filter(name => name !== gameName);
+            // L'ajouter au début de la liste
+            gameDrawOrder.unshift(gameName);
+            
             updateResultsDisplay();
         }
 
@@ -519,12 +527,24 @@
                 return;
             }
 
-            // Trier les jeux par nombre de tirages (décroissant) puis par ordre alphabétique
-            const sortedGames = Object.entries(gameDraws)
-                .sort(([a, countA], [b, countB]) => {
-                    if (countB !== countA) return countB - countA;
-                    return a.localeCompare(b);
-                });
+            // Séparer les jeux par nombre de tirages
+            const gamesWithThreePlus = [];
+            const gamesWithTwo = [];
+            const gamesWithOne = [];
+
+            gameDrawOrder.forEach(gameName => {
+                const count = gameDraws[gameName];
+                if (count >= 3) {
+                    gamesWithThreePlus.push([gameName, count]);
+                } else if (count === 2) {
+                    gamesWithTwo.push([gameName, count]);
+                } else {
+                    gamesWithOne.push([gameName, count]);
+                }
+            });
+
+            // Assembler dans l'ordre : 3+ (par ordre inverse de tirage), 2 (par ordre inverse de tirage), 1 (par ordre inverse de tirage)
+            const sortedGames = [...gamesWithThreePlus, ...gamesWithTwo, ...gamesWithOne];
 
             container.innerHTML = sortedGames.map(([gameName, count]) => {
                 let displayText = gameName;
@@ -543,6 +563,7 @@
 
         function clearResults() {
             gameDraws = {};
+            gameDrawOrder = [];
             updateResultsDisplay();
         }
 
